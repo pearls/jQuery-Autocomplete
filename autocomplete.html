@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Autocomplete functionality</title>
+    <link href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <style>
+        #product-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+
+        #product-icon {
+            float: left;
+            height: 32px;
+            width: 32px;
+        }
+
+        #product-description {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <!-- Javascript -->
+    <script>
+        $(function () {
+            
+            //Below is a custom json object from api
+            var projects = [
+                {
+                    ProductId: 1,
+                    Description: "Product Item 1",
+                    SKUNumber: "aaaaa"
+                },
+                {
+                    ProductId: 2,
+                    Description: "Product Item 2",
+                    SKUNumber: "bbbb"
+                },
+                {
+                    ProductId: 3,
+                    Description: "Product Item 3",
+                    SKUNumber: "cccc"
+                }
+            ];
+
+
+            // overriding lable and value param with object's properties.    
+            var array = projects.error ? [] : $.map(projects, function (m) {
+                return {
+                    label: m.SKUNumber,
+                    value: m.Description
+                };
+            });
+
+
+            // Assigining this array as source of autocomplete.
+            $("#product").autocomplete({
+                minLength: 0,
+                source: array,
+                focus: function (event, ui) {
+                    $("#product").val(ui.item.label);
+                    return false;
+                },
+                select: function (event, ui) {
+                    $("#product").val(ui.item.label);
+                    $("#product-id").val(ui.item.value);
+                    //$("#project-description").html(ui.item.Description);
+                    return false;
+                }
+            })
+            .data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li>")
+                .append("<a>" + item.label + "<br>" + item.value + "</a>")
+                .appendTo(ul);
+            };
+        });
+    </script>
+</head>
+<body>
+    <div id="product-label">Select a product (type "a" for a start):</div>
+    <input id="product">
+    <input type="hidden" id="product-id">
+    <p id="product-description"></p>
+</body>
+</html>
